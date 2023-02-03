@@ -8,7 +8,7 @@ router = APIRouter(
     tags=['Users']
 )
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
+@router.post('', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def create_users(user: schemas.UserCreate, db: Session = Depends(get_db)):
     #cursor.execute(""" INSERT INTO users(email, password) 
     #                   VALUES (%s, %s) RETURNING *""", (user.email, user.password))
@@ -16,6 +16,11 @@ def create_users(user: schemas.UserCreate, db: Session = Depends(get_db)):
     #new_user = cursor.fetchone()
     #conn.commit()
 
+    found_user = db.query(models.User.email).filter(models.User.email == user.email).first()
+
+    if(found_user):
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail = f"User with this email alredy exists")
+    
     hashed_psw =utils.generateHash(user.password)
     user.password = hashed_psw
 

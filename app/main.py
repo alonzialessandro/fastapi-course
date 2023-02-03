@@ -10,7 +10,7 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 
 origins = [
-    "https://www.google.com",
+    '*'
 ]
 
 app.add_middleware(
@@ -30,4 +30,4 @@ app.include_router(votes.router)
 # and the read_root() function is associated with that route.
 @app.get("/")
 def read_root():
-    return {"message": "Hello World!!"}
+    return {"message": "Hello World"}

@@ -42,7 +42,7 @@ def get_post(id: int, db: Session = Depends(get_db), user: int = Depends(oauth2.
     return post
    
     
-@router.post("", status_code = status.HTTP_201_CREATED, response_model=schemas.Post)
+@router.post('', status_code = status.HTTP_201_CREATED, response_model=schemas.Post)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), user: int = Depends(oauth2.get_current_user)):
     #cursor.execute(""" INSERT INTO posts(title, content) 
     #                   VALUES (%s, %s) RETURNING *""", (post.title, post.content))
