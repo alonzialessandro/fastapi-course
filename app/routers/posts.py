@@ -10,7 +10,7 @@ router = APIRouter(
     tags=['Posts']
 )
 
-@router.get("/", response_model=List[schemas.PostOut])
+@router.get('', response_model=List[schemas.PostOut])
 def get_posts(db: Session = Depends(get_db), limit : int = 10, skip : int = 0, search : Optional[str] = ''): #user: int = Depends(oauth2.get_current_user)):
     #cursor.execute(""" SELECT * FROM posts """)
     #posts = cursor.fetchall()
@@ -42,7 +42,7 @@ def get_post(id: int, db: Session = Depends(get_db), user: int = Depends(oauth2.
     return post
    
     
-@router.post("/", status_code = status.HTTP_201_CREATED, response_model=schemas.Post)
+@router.post("", status_code = status.HTTP_201_CREATED, response_model=schemas.Post)
 def create_posts(post: schemas.PostCreate, db: Session = Depends(get_db), user: int = Depends(oauth2.get_current_user)):
     #cursor.execute(""" INSERT INTO posts(title, content) 
     #                   VALUES (%s, %s) RETURNING *""", (post.title, post.content))
