@@ -97,3 +97,27 @@ def update_post(id: int, update_post: schemas.PostBase, db: Session = Depends(ge
     db.commit()
 
     return query.first()
+
+
+@router.patch("/{id}", response_model=schemas.Post)
+def update_post(id: int, update_post: schemas.PostUpdate, db: Session = Depends(get_db), user: int = Depends(oauth2.get_current_user)):
+    query = db.query(models.Post).filter(models.Post.id == id)
+
+    post = query.first()
+
+    if post == None:
+       raise HTTPException(status_code = status.HTTP_404_NOT_FOUND, detail = f"Post with id {id} not found")
+    
+    if user.id != post.owner_id:
+        raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = f"Forbidden operation")    
+    
+    new_post_data = update_post.dict(exclude_unset=True)
+    
+    for key, value in new_post_data.items():
+            setattr(post, key, value)
+
+    db.add(post)
+    db.commit()
+    db.refresh(post)
+
+    return post
