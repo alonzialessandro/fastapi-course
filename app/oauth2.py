@@ -43,6 +43,9 @@ def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(
 
     token = verify_access_token(token=token, credential_exception=credentials_exception)
     user = db.query(models.User).filter(models.User.id == token.id).first()
+
+    if not user:
+        raise HTTPException(status_code=400, detail="Token is invalid")
     
     return user
 
