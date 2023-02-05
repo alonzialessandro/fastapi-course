@@ -101,6 +101,7 @@ def update_post(id: int, update_post: schemas.PostBase, db: Session = Depends(ge
 
 @router.patch("/{id}", response_model=schemas.Post)
 def update_post(id: int, update_post: schemas.PostUpdate, db: Session = Depends(get_db), user: int = Depends(oauth2.get_current_user)):
+    
     query = db.query(models.Post).filter(models.Post.id == id)
 
     post = query.first()
@@ -112,6 +113,9 @@ def update_post(id: int, update_post: schemas.PostUpdate, db: Session = Depends(
         raise HTTPException(status_code = status.HTTP_403_FORBIDDEN, detail = f"Forbidden operation")    
     
     new_post_data = update_post.dict(exclude_unset=True)
+    
+    if len(new_post_data.keys()) == 0:
+        raise HTTPException(status_code = status.HTTP_400_BAD_REQUEST, detail = "No valid field has been provided")    
     
     for key, value in new_post_data.items():
             setattr(post, key, value)
